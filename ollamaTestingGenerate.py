@@ -1,23 +1,5 @@
 import ollama
 import re
-# Define a dictionary of hierarchical structures and corresponding object arrays
-# layer_objects = {
-#     'Layer1': ["Jelly", "Tofu", "Mashed Potatoes"],  # 非常软的食物
-#     'Layer2': ["Yogurt", "Cream Cheese", "Pudding"],  # 软质食物
-#     'Layer3': ["Bread", "Firm Tofu", "Mozzarella Cheese"],  # 中等软质食物
-#     'Layer4': ["Apple", "Carrot", "Cherry Tomatoes"],  # 较硬的食物
-#     'Layer5': ["Cucumber", "Bell Pepper", "Coconut"]  # 硬质食物
-# }
-
-# Define a dictionary of hierarchical structures and corresponding values
-# layer_values = {
-#     'Layer1': 1000,
-#     'Layer2': 2000,
-#     'Layer3': 3000,
-#     'Layer4': 4000,
-#     'Layer5': 5000
-# }
-
 # Get the user's input object name
 object_name = input("Please enter the object name: ")
 
