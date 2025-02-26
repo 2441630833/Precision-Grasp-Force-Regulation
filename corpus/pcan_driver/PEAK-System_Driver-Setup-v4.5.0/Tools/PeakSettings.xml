@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<applications xmlns="http://schemas.microsoft.com/windows/cpltasks/v1" 
+              xmlns:sh="http://schemas.microsoft.com/windows/tasks/v1">
+    <application id="{BC74B994-3D81-4E12-A1F0-12724F1BAFD4}"> 
+        <sh:task id="{A258CD4E-BE6D-44E7-8D12-1F430A758ABD}"> 
+            <sh:name>@%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettingsRes.dll,-10</sh:name>
+            <sh:keywords>@%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettingsRes.dll,-11</sh:keywords>
+            <sh:command>%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettings.exe /can</sh:command>
+        </sh:task>
+        <sh:task id="{9C4F82E1-6869-4950-AE64-146755D16291}"> 
+            <sh:name>@%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettingsRes.dll,-12</sh:name>
+            <sh:keywords>@%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettingsRes.dll,-13</sh:keywords>
+            <sh:command>%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettings.exe /drivers</sh:command>
+        </sh:task>
+        <sh:task id="{E9ADC0B7-800A-4F7C-BF56-B5F87DF2B539}">
+            <sh:name>@%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettingsRes.dll,-14</sh:name>
+            <sh:keywords>@%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettingsRes.dll,-15</sh:keywords>
+            <sh:command>%PROGRAMFILES%\PEAK-System\PEAK-Drivers 4\Tools\PeakSettings.exe /apis</sh:command>
+        </sh:task>
+        <category id="2">
+            <sh:task idref="{A258CD4E-BE6D-44E7-8D12-1F430A758ABD}"/> 
+            <sh:task idref="{9C4F82E1-6869-4950-AE64-146755D16291}"/> 
+            <sh:task idref="{E9ADC0B7-800A-4F7C-BF56-B5F87DF2B539}"/> 
+        </category>
+        <category id="3">
+            <sh:task idref="{A258CD4E-BE6D-44E7-8D12-1F430A758ABD}"/> 
+            <sh:task idref="{9C4F82E1-6869-4950-AE64-146755D16291}"/> 
+            <sh:task idref="{E9ADC0B7-800A-4F7C-BF56-B5F87DF2B539}"/> 
+        </category>
+   </application>
+</applications>
