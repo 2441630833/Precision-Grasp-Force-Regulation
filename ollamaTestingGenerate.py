@@ -37,14 +37,14 @@ message = {
 # Use ollama to interact with the large model
 response = ollama.chat(model="llama3.2", stream=False, messages=[message], options={"temperature": 0.5})
 
-# 从响应中提取content
+# Extract content from response
 content = response['message']['content']
 
 print(content)
-# 使用正则表达式匹配数字
+# Use regular expression to match numbers
 numbers = re.findall(r'\d+', content)
 if numbers:
-    # 输出找到的第一个数字
+    # Output the first number found
     print(numbers[0])
 else:
-    print("无法从响应中提取数字")
+    print("Unable to extract number from response")

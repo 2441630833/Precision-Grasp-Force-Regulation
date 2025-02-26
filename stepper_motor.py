@@ -4,41 +4,41 @@ import logging
 
 class MotorController:
     class FUNC_CODES:
-        POS_CONTROL = 0xFD  # 位置控制
-        ORIGIN_SET_O = 0x93 # 设置单圈回零的零点位置
-        ORIGIN_TRIGGER_RETURN = 0x9A  # 回零控制
-        INTERRUPT_ORIGIN_RETURN = 0x9C # 强制中断并退出回零操作
-        ORIGIN_MODIFY_PARAMS = 0x4C # 修改回零参数
-        RESET_CUR_POS_TO_ZERO = 0x0A # 将当前位置清零
-        RESET_CLOG_PRO = 0x0E # 解除堵转保护
-        EN_CONTROL = 0xF3 # 使能信号控制
-        VEL_CONTROL = 0xF6 # 速度模式
-        STOP_NOW = 0xFE # 立即停止（所有控制模式都通用）
-        SYNCHRONOUS_MOTION = 0xFF # 多机同步运动
-        S_CONF_W = 0x48 # 修改驱动配置参数
+        POS_CONTROL = 0xFD  # Position control
+        ORIGIN_SET_O = 0x93 # Set single-turn homing zero point
+        ORIGIN_TRIGGER_RETURN = 0x9A  # Homing control
+        INTERRUPT_ORIGIN_RETURN = 0x9C # Forcefully interrupt and exit the homing operation
+        ORIGIN_MODIFY_PARAMS = 0x4C # Modify homing parameters
+        RESET_CUR_POS_TO_ZERO = 0x0A # Reset the current position to zero
+        RESET_CLOG_PRO = 0x0E # Reset the blockage protection
+        EN_CONTROL = 0xF3 # Enable signal control
+        VEL_CONTROL = 0xF6 # Velocity mode
+        STOP_NOW = 0xFE # Immediate stop (applicable to all control modes)
+        SYNCHRONOUS_MOTION = 0xFF # Multi-motor synchronous motion
+        S_CONF_W = 0x48 # Modify drive configuration parameters
 
-        # 系统参数功能码，可作为read_sys_param()的func_code参数
-        S_VER = 0x1F  # 读取固件版本和对应的硬件版本
-        S_RL = 0x20  # 读取相电阻和相电感
-        S_PID = 0x21  # 读取PID参数
-        S_VBUS = 0x24  # 读取总线电压
-        S_CPHA = 0x27  # 读取相电流
-        S_ENCL = 0x31  # 读取经过线性化校准后的编码器值
-        S_TPOS = 0x33  # 读取电机目标位置角度
-        S_VEL = 0x35  # 读取电机实时转速
-        S_CPOS = 0x36  # 读取电机实时位置角度
-        S_PERR = 0x37  # 读取电机位置误差角度
-        S_FLAG = 0x3A  # 读取使能/到位/堵转状态标志位
-        S_ORG = 0x3B  # 读取正在回零/回零失败状态标志位
-        S_CONF = 0x42  # 读取驱动参数
-        S_STATE = 0x43  # 读取系统状态参数
+        # System parameter function codes, can be used as func_code parameter for read_sys_param()
+        S_VER = 0x1F  # Read firmware version and corresponding hardware version
+        S_RL = 0x20  # Read phase resistance and phase inductance
+        S_PID = 0x21  # Read PID parameters
+        S_VBUS = 0x24  # Read bus voltage
+        S_CPHA = 0x27  # Read phase current
+        S_ENCL = 0x31  # Read encoder value after linearization calibration
+        S_TPOS = 0x33  # Read motor target position angle
+        S_VEL = 0x35  # Read motor real-time speed
+        S_CPOS = 0x36  # Read motor real-time position angle
+        S_PERR = 0x37  # Read motor position error angle
+        S_FLAG = 0x3A  # Read enable/arrived/blocked status flags
+        S_ORG = 0x3B  # Read homing/homing failure status flags
+        S_CONF = 0x42  # Read drive parameters
+        S_STATE = 0x43  # Read system status parameters
         
 
     class O_MODE(Enum):
-        SINGLE_TURN_NEAREST_ZERO = 0  # 单圈就近回零
-        SINGLE_TURN_DIRECTIONAL_ZERO = 1  # 单圈方向回零
-        MULTI_TURN_UNLIMITED_COLLISION_ZERO = 2  # 多圈无限位碰撞回零
-        MULTI_TURN_LIMITED_SWITCH_ZERO = 3  # 多圈有限位开关回零
+        SINGLE_TURN_NEAREST_ZERO = 0  # Single-turn nearest zero
+        SINGLE_TURN_DIRECTIONAL_ZERO = 1  # Single-turn directional zero
+        MULTI_TURN_UNLIMITED_COLLISION_ZERO = 2  # Multi-turn unlimited collision zero
+        MULTI_TURN_LIMITED_SWITCH_ZERO = 3  # Multi-turn limited switch zero
 
     def __init__(self, bus, addr=1):
         self.bus = bus
@@ -56,15 +56,15 @@ class MotorController:
     def pos_control(self, vel, clk, dir=1, acc=100, raF=False, snF=False):
         """
         Position Control.
-        位置控制
+        Position control
 
         Args:
-        vel (int): 速度(RPM)   ，范围0 - 5000RPM
-        clk (int): 脉冲数      ，范围0- (2^32 - 1)个
-        dir (int): 方向        ，0为CW，其余值为CCW
-        acc (int): 加速度      ，范围0 - 255，注意：0是直接启动
-        raF (bool): 相位/绝对标志，false为相对运动，true为绝对值运动
-        snF (bool): 多机同步标志 ，false为不启用，true为启用
+        vel (int): Speed (RPM), range 0 - 5000RPM
+        clk (int): Pulse count, range 0 - (2^32 - 1)
+        dir (int): Direction, 0 for CW, other values for CCW
+        acc (int): Acceleration, range 0 - 255, note: 0 means direct start
+        raF (bool): Phase/Absolute flag, false for relative movement, true for absolute movement
+        snF (bool): Multi-motor synchronization flag, false for disabled, true for enabled
         """
         # Create command data
         cmd_data = bytearray([dir])
@@ -84,8 +84,8 @@ class MotorController:
     def origin_set_o(self, svF):
         """
         Set the zero position for single-turn homing.
-        设置单圈回零的零点位置
-        可以让电机转到想要的位置， 然后发送该命令设置单圈回零的零点位置。
+        Set the zero position for single-turn homing
+        You can rotate the motor to the desired position, then send this command to set the zero position for single-turn homing.
 
         Args:
         svF (bool): Whether to store the setting (False: do not store, True: store)
@@ -105,11 +105,11 @@ class MotorController:
     def origin_trigger_return(self, o_mode: O_MODE, snF: bool):
         """
         Origin Trigger Return Control.
-        回零控制
+        Homing control
 
         Args:
-        o_mode (O_MODE): 回零模式
-        snF (bool): 多机同步运动标志 (False: 不启用, True: 启用)
+        o_mode (O_MODE): Homing mode
+        snF (bool): Multi-motor synchronization flag (False: disabled, True: enabled)
         """
         if not isinstance(o_mode, self.O_MODE):
             raise ValueError("o_mode must be an instance of O_MODE Enum.")
@@ -128,7 +128,7 @@ class MotorController:
     def interrupt_origin_return(self):
         """
         Forcefully interrupt and exit the homing operation.
-        强制中断并退出回零操作
+        Forcefully interrupt and exit the homing operation
         """
         # Create command data
         cmd_data = bytearray([0x48])  # Command specific byte
@@ -143,7 +143,7 @@ class MotorController:
     def origin_modify_params(self, svF, o_mode, o_dir, o_vel, o_tm, sl_vel, sl_ma, sl_ms, potF):
         """
         Modify homing parameters.
-        修改回零参数
+        Modify homing parameters
 
         Args:
         svF (bool): Whether to store the setting
@@ -179,7 +179,7 @@ class MotorController:
     def reset_cur_pos_to_zero(self):
         """
         Reset the current position to zero.
-        将当前位置清零
+        Reset the current position to zero
         """
         # Create command data
         cmd_data = bytearray([self.FUNC_CODES.RESET_CUR_POS_TO_ZERO])
@@ -195,7 +195,7 @@ class MotorController:
     def reset_clog_pro(self):
         """
         Reset the blockage protection.
-        解除堵转保护
+        Reset the blockage protection
         """
         # Create command data
         cmd_data = bytearray([self.FUNC_CODES.RESET_CLOG_PRO])
@@ -212,7 +212,7 @@ class MotorController:
     def en_control(self, state, snF=False):
         """
         Enable signal control.
-        使能信号控制
+        Enable signal control
 
         Args:
         state (bool): Enable state (True to enable the motor, False to disable)
@@ -234,7 +234,7 @@ class MotorController:
     def vel_control(self, vel, dir=1, acc=100, snF=False):
         """
         Velocity control.
-        速度模式
+        Velocity mode
         Args:
         vel (int): Velocity (Range: 0 - 5000 RPM)
         dir (int): Direction (0 for CW, other values for CCW)
@@ -263,7 +263,7 @@ class MotorController:
     def stop_now(self, snF=False):
         """
         Immediate stop for the motor (applicable to all control modes).
-        立即停止（所有控制模式都通用）
+        Immediate stop (applicable to all control modes)
 
         Args:
         snF (bool): Multi-motor synchronization flag (False: not enabled, True: enabled)
@@ -283,13 +283,13 @@ class MotorController:
     def synchronous_motion(self, addr=0):
         """
         Initiate multi-motor synchronous motion.
-        多机同步运动，发送此指令前，需要设置各需要同步运行电机的
-        目标位置（pos_control）或速度（vel_control）并设置snF=True使其先
-        进入同步模式。
+        Multi-motor synchronous motion. Before sending this command, you need to set the
+        target position (pos_control) or velocity (vel_control) for each motor that needs to be
+        synchronized and set snF=True to put them in synchronization mode first.
 
         Args:
         addr (int): Address of the motor controller to be synchronized.
-        默认0，表示广播通知所有电机开始同步运动。
+        Default is 0, which means broadcast to notify all motors to start synchronous motion.
         """
         # Create command data
         cmd_data = bytearray([self.FUNC_CODES.SYNCHRONOUS_MOTION])
@@ -346,7 +346,7 @@ class MotorController:
     def read_sys_param(self, func_code, clear_can_rx=True):
         """
         Read system parameters from the motor controller.
-        读取系统参数
+        Read system parameters
 
         Args:    
         func_code (int): Function code to read.
@@ -407,10 +407,10 @@ class MotorController:
             raise ValueError("Invalid data length for status flags.")
 
         flags_byte = data[1]
-        enabled = bool(flags_byte & 0x01)  # 电机使能状态标志位
-        position_arrived = bool(flags_byte & 0x02)  # 电机到位标志位
-        blocked = bool(flags_byte & 0x04)  # 电机堵转标志位
-        blocked_protection = bool(flags_byte & 0x08)  # 电机堵转保护标志
+        enabled = bool(flags_byte & 0x01)  # Motor enable status flag
+        position_arrived = bool(flags_byte & 0x02)  # Motor arrived flag
+        blocked = bool(flags_byte & 0x04)  # Motor blocked flag
+        blocked_protection = bool(flags_byte & 0x08)  # Motor blocked protection flag
 
         return enabled, position_arrived, blocked, blocked_protection
     def decode_config_parameters(self, data):
@@ -496,10 +496,10 @@ class MotorController:
 
     def clear_can_rx(self, timeout=1):
         """
-        清除接收缓冲区中的所有现有消息。
+        Clear all existing messages in the receive buffer.
 
-        参数:
-        timeout: 等待清除操作的时间（单位：毫秒）。
+        Parameters:
+        timeout: Time to wait for the clearing operation (in milliseconds).
         """
         timeout_seconds = timeout / 1000.0  # Convert to seconds
         while True:
@@ -514,12 +514,12 @@ class MotorController:
         pack_num = 0
         i = 0
         while i < len(data):
-            # 功能码+数据包
+            # Function code + data packet
             message_data = bytearray([func_code]) + bytearray(
                 data[i : min(i + 7, len(data))]
             )
             i += 7
-            # 高8位表示电机ID地址，低8位表示第几包数据(0表示第一包)。
+            # High 8 bits represent motor ID address, low 8 bits represent which data packet (0 represents the first packet)
             ext_id = (addr << 8) | pack_num
             messages.append(
                 can.Message(

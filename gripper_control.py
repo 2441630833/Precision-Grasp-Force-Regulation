@@ -8,7 +8,7 @@ class GripperControl:
         self.motor = MotorController(bus, addr=addr)
         self.s_conf = self.motor.read_sys_param(self.motor.FUNC_CODES.S_CONF)
         self.max_clk_open = max_clk_open
-        self.CLK_DIV_DEGREE = 8.88893  # clk/角度, 比例常数
+        self.CLK_DIV_DEGREE = 8.88893  # clk/degree, proportion constant
         self.OPEN = 0
         self.CLOSE = 1
         self.DEFAULT_ACC = 253
@@ -18,10 +18,10 @@ class GripperControl:
         if refresh_conf or self.s_conf is None:
             self.s_conf = self.motor.read_sys_param(self.motor.FUNC_CODES.S_CONF)
             logging.info(
-                f"当前闭环模式最大输出电压：{self.s_conf.get('closed_loop_mode_max_output_voltage')}mV"
+                f"Current closed-loop mode maximum output voltage: {self.s_conf.get('closed_loop_mode_max_output_voltage')}mV"
             )
 
-        # 修改闭环模式最大输出电压，单位mV，最大可以是 5000mV
+        # Modify the maximum output voltage in closed-loop mode, unit mV, maximum can be 5000mV
         self.s_conf["closed_loop_mode_max_output_voltage"] = voltage_mv
         self.motor.set_config_parameters(self.s_conf)
 
@@ -32,13 +32,13 @@ class GripperControl:
         min_stop_pos_err=10,
         min_stop_vel=0.1,
     ):
-        """自动初始化爪开合位置
+        """Automatically initialize gripper open/close position
 
         Args:
-            auto_voltage (int, optional): 自动初始化时使用的最大输出电压. Defaults to 1000.
-            auto_pos_clk (int, optional): 自动初始化时使用的最大位移，需大于最大行程. Defaults to 40000.
-            min_stop_pos_err (int, optional): 检测合到头的最小位置误差. Defaults to 10.
-            min_stop_vel (float, optional): 加测合到头的最大当前速度. Defaults to 0.1.
+            auto_voltage (int, optional): Maximum output voltage used during auto initialization. Defaults to 1000.
+            auto_pos_clk (int, optional): Maximum displacement used during auto initialization, must be greater than maximum travel. Defaults to 40000.
+            min_stop_pos_err (int, optional): Minimum position error to detect when fully closed. Defaults to 10.
+            min_stop_vel (float, optional): Maximum current velocity to detect when fully closed. Defaults to 0.1.
         """
         self.set_max_output_voltage(auto_voltage)
         self.motor.reset_cur_pos_to_zero()
@@ -61,9 +61,9 @@ class GripperControl:
                 and abs(target_degree - current_degree) > min_stop_pos_err
             ):
                 logging.info(
-                    f"实际角度：{current_degree:.2f}, 目标-实际角度差：{target_degree-current_degree:.2f}, 当前速度: {current_vel:.2f}"
+                    f"Actual angle: {current_degree:.2f}, Target-Actual angle difference: {target_degree-current_degree:.2f}, Current velocity: {current_vel:.2f}"
                 )
-                # 将当前位置清零
+                # Reset current position to zero
                 self.motor.reset_cur_pos_to_zero()
                 break
 
@@ -72,7 +72,7 @@ class GripperControl:
             clk=self.max_clk_open,
             dir=self.OPEN,
             acc=self.DEFAULT_ACC,
-            raF=True, # 绝对值运动
+            raF=True, # Absolute movement
             snF=False,
         )
 
@@ -104,7 +104,7 @@ class GripperControl:
                 clk=int(new_target_clk),
                 dir=self.OPEN,
                 acc=self.DEFAULT_ACC,
-                raF=True, # 绝对值运动
+                raF=True, # Absolute movement
                 snF=False,
             )
     def close_gripper(self):
@@ -113,7 +113,7 @@ class GripperControl:
             clk=0,
             dir=self.OPEN,
             acc=self.DEFAULT_ACC,
-            raF=True, # 绝对值运动
+            raF=True, # Absolute movement
             snF=False,
         )
 
@@ -123,6 +123,6 @@ class GripperControl:
             clk=self.max_clk_open,
             dir=self.OPEN,
             acc=self.DEFAULT_ACC,
-            raF=True, # 绝对值运动
+            raF=True, # Absolute movement
             snF=False,
         )
